@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import CookieConsentBanner from '@/components/CookieConsentBanner'
 import GlobalBackground from '@/components/GlobalBackground'
 import { LanguageProvider } from '@/hooks/useLanguage'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 
@@ -33,11 +34,13 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <LanguageProvider>
-          <GlobalBackground />
-          <Header />
-          {children}
-          <Footer />
-          <CookieConsentBanner />
+          <AuthProvider>
+            <GlobalBackground />
+            <Header />
+            {children}
+            <Footer />
+            <CookieConsentBanner />
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>
