@@ -7,6 +7,8 @@ import CookieConsentBanner from '@/components/CookieConsentBanner'
 import GlobalBackground from '@/components/GlobalBackground'
 import { LanguageProvider } from '@/hooks/useLanguage'
 
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -26,6 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={inter.className}>
         <LanguageProvider>
           <GlobalBackground />
