@@ -146,7 +146,7 @@ const RollingGallery = ({ autoplay = true, pauseOnHover = true }) => {
                 }}
               >
                 <div 
-                  className="w-full h-full bg-white/15 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl hover:scale-110 transition-all duration-500 overflow-hidden"
+                  className="w-full h-full rounded-2xl border border-white/30 shadow-2xl hover:scale-110 transition-all duration-500 overflow-hidden"
                   style={{
                     boxShadow: `
                       0 20px 40px rgba(0,0,0,0.3),

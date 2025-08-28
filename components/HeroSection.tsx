@@ -8,7 +8,7 @@ export default function HeroSection() {
   const { t } = useLanguage()
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative min-h-screen">
       {/* 内容层 */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
@@ -40,10 +40,10 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* 装饰性元素 */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-pink-400/20 rounded-full animate-pulse" />
-      <div className="absolute top-40 right-20 w-16 h-16 bg-purple-400/20 rounded-full animate-pulse delay-1000" />
-      <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-400/20 rounded-full animate-pulse delay-2000" />
+      {/* 装饰性元素 - 完全透明，只保留动画 */}
+      <div className="absolute top-20 left-10 w-20 h-20 rounded-full animate-pulse" />
+      <div className="absolute top-40 right-20 w-16 h-16 rounded-full animate-pulse delay-1000" />
+      <div className="absolute bottom-20 left-1/4 w-12 h-12 rounded-full animate-pulse delay-2000" />
     </section>
   )
 }
