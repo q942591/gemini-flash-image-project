@@ -1,13 +1,13 @@
 import Stripe from 'stripe';
 
-// 初始化Stripe
+// 初始化Stripe客户端
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-08-27.basil',
 });
 
 // 创建支付意图
-export async function createPaymentIntent({
+export const createPaymentIntent = async ({
   amount,
   currency = 'usd',
   metadata = {},
@@ -15,31 +15,42 @@ export async function createPaymentIntent({
   amount: number;
   currency?: string;
   metadata?: Record<string, string>;
-}) {
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: Math.round(amount * 100), // Stripe使用分为单位
-    currency,
-    metadata,
-    automatic_payment_methods: { enabled: true },
-  });
-  return paymentIntent;
-}
+}) => {
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Stripe使用分为单位
+      currency,
+      metadata,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    return paymentIntent;
+  } catch (error) {
+    console.error('创建支付意图失败:', error);
+    throw error;
+  }
+};
 
 // 确认支付
-export async function confirmPayment(paymentIntentId: string) {
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-  return paymentIntent;
-}
+export const confirmPayment = async (paymentIntentId: string, paymentMethodId: string) => {
+  try {
+    const paymentIntent = await stripe.paymentIntents.confirm(paymentIntentId, {
+      payment_method: paymentMethodId,
+    });
+    return paymentIntent;
+  } catch (error) {
+    console.error('确认支付失败:', error);
+    throw error;
+  }
+};
 
 // 验证webhook签名
-export function verifyWebhookSignature(
-  body: string,
-  signature: string,
-  webhookSecret: string
-) {
+export const verifyWebhookSignature = (payload: string, signature: string, secret: string) => {
   try {
-    return stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    return stripe.webhooks.constructEvent(payload, signature, secret);
   } catch (error) {
-    throw new Error(`Webhook signature verification failed: ${error}`);
+    console.error('验证webhook签名失败:', error);
+    throw error;
   }
-}
+};

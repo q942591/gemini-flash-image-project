@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin } from '@/lib/supabase-server';
-import { confirmPayment } from '@/lib/stripe';
+import { stripe } from '@/lib/stripe';
 
 // 强制动态路由，防止静态生成
 export const dynamic = 'force-dynamic';
@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
-    // 确认支付状态
-    const paymentIntent = await confirmPayment(paymentIntentId);
+    // 直接获取支付意图状态，而不是确认支付
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     
     if (paymentIntent.status !== 'succeeded') {
       return NextResponse.json({ error: 'Payment not completed' }, { status: 400 });

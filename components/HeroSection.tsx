@@ -29,7 +29,7 @@ export default function HeroSection() {
 
         {/* 功能入口按钮 */}
         <div className="flex justify-center space-x-6 mb-12">
-          <Link href="/image-edit">
+          <Link href="/function">
             <button className="px-8 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 backdrop-blur-md text-white font-semibold rounded-full border border-purple-400/40 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 transition-all duration-300 hover:scale-105">
               {t('hero.startCreating')}
             </button>

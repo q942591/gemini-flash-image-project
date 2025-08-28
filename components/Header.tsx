@@ -124,7 +124,7 @@ export default function Header() {
                 </Button>
               </Link>
             )}
-            <Link href="/image-edit">
+            <Link href="/function">
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                 {t('common.getStarted')}
               </Button>
@@ -235,7 +235,7 @@ export default function Header() {
                   </Button>
                 </Link>
               )}
-              <Link href="/image-edit">
+              <Link href="/function">
                 <Button className="justify-start bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                   {t('common.getStarted')}
                 </Button>
