@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 import "./Plasma.css";
 
-const hexToRgb = (hex) => {
+const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 0.5, 0.2];
   return [
@@ -84,6 +84,15 @@ void main() {
   fragColor = vec4(finalColor, alpha);
 }`;
 
+interface PlasmaProps {
+  color?: string;
+  speed?: number;
+  direction?: "forward" | "reverse" | "pingpong";
+  scale?: number;
+  opacity?: number;
+  mouseInteractive?: boolean;
+}
+
 export const Plasma = ({
   color = "#ffffff",
   speed = 1,
@@ -91,8 +100,8 @@ export const Plasma = ({
   scale = 1,
   opacity = 1,
   mouseInteractive = true,
-}) => {
-  const containerRef = useRef(null);
+}: PlasmaProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -137,9 +146,10 @@ export const Plasma = ({
 
     const mesh = new Mesh(gl, { geometry, program });
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (!mouseInteractive) return;
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
       mousePos.current.x = e.clientX - rect.left;
       mousePos.current.y = e.clientY - rect.top;
       const mouseUniform = program.uniforms.uMouse.value;
@@ -147,12 +157,13 @@ export const Plasma = ({
       mouseUniform[1] = mousePos.current.y;
     };
 
-    if (mouseInteractive) {
+    if (mouseInteractive && containerRef.current) {
       containerRef.current.addEventListener("mousemove", handleMouseMove);
     }
 
     const setSize = () => {
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
       renderer.setSize(width, height);
@@ -162,12 +173,14 @@ export const Plasma = ({
     };
 
     const ro = new ResizeObserver(setSize);
-    ro.observe(containerRef.current);
+    if (containerRef.current) {
+      ro.observe(containerRef.current);
+    }
     setSize();
 
     let raf = 0;
     const t0 = performance.now();
-    const loop = (t) => {
+    const loop = (t: number) => {
       let timeValue = (t - t0) * 0.001;
 
       if (direction === "pingpong") {
@@ -188,8 +201,9 @@ export const Plasma = ({
         containerRef.current.removeEventListener("mousemove", handleMouseMove);
       }
       try {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        containerRef.current?.removeChild(canvas);
+        if (containerRef.current && canvas.parentNode === containerRef.current) {
+          containerRef.current.removeChild(canvas);
+        }
       } catch {
         console.warn("Canvas already removed from container");
       }
