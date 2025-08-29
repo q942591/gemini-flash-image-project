@@ -14,7 +14,7 @@ const ReviewCard = ({
   body: string;
 }) => {
   return (
-    <div className="relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4 border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300">
+    <div className="relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4 border-gray-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="flex flex-row items-center gap-2">
         <img className="rounded-full w-8 h-8 object-cover" alt="" src={img} />
         <div className="flex flex-col">
@@ -37,13 +37,13 @@ export function UserReviewsMarquee() {
       name: t('userReviews.reviews.0.name'),
       username: t('userReviews.reviews.0.role'),
       body: t('userReviews.reviews.0.content'),
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face",
     },
     {
       name: t('userReviews.reviews.1.name'),
       username: t('userReviews.reviews.1.role'),
       body: t('userReviews.reviews.1.content'),
-      img: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
     },
     {
       name: t('userReviews.reviews.2.name'),
@@ -85,25 +85,25 @@ export function UserReviewsMarquee() {
       name: t('userReviews.reviews.8.name'),
       username: t('userReviews.reviews.8.role'),
       body: t('userReviews.reviews.8.content'),
-      img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
     },
     {
       name: t('userReviews.reviews.9.name'),
       username: t('userReviews.reviews.9.role'),
       body: t('userReviews.reviews.9.content'),
-      img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&h=64&fit=crop&crop=face",
     },
     {
       name: t('userReviews.reviews.10.name'),
       username: t('userReviews.reviews.10.role'),
       body: t('userReviews.reviews.10.content'),
-      img: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=64&h=64&fit=crop&crop=face",
     },
     {
       name: t('userReviews.reviews.11.name'),
       username: t('userReviews.reviews.11.role'),
       body: t('userReviews.reviews.11.content'),
-      img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face",
+      img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=64&h=64&fit=crop&crop=face",
     }
   ];
 
@@ -113,7 +113,7 @@ export function UserReviewsMarquee() {
 
   return (
     <div className="mb-16">
-      <div className="text-center mb-12">
+      <div className="text-center mb-12 py-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 drop-shadow-2xl">
           <span className="bg-gradient-to-r from-blue-500 via-green-500 to-purple-500 bg-clip-text text-transparent">
             {t('userReviews.title')}
@@ -125,7 +125,7 @@ export function UserReviewsMarquee() {
       </div>
       
       {/* 两行跑马灯容器 */}
-      <div className="w-full space-y-8">
+      <div className="w-full space-y-8 px-4">
         {/* 第一行 - 向左滚动 */}
         <div className="relative overflow-hidden">
           <div className="flex animate-scroll-left">

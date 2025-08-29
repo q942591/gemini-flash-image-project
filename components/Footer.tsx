@@ -2,8 +2,11 @@
 
 import { Button } from '@/components/ui/button'
 import { Zap, Github, Twitter, Linkedin } from 'lucide-react'
+import { useLanguage } from '@/hooks/useLanguage'
 
 export default function Footer() {
+  const { t } = useLanguage()
+
   return (
     <footer className="bg-white/40 backdrop-blur-xl border-t border-white/40 shadow-2xl">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,7 +22,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-600 mb-6 max-w-md">
-              Revolutionary AI image editing tool that makes creativity accessible. Achieve professional-level image editing effects with natural language descriptions.
+              {t('footer.description')}
             </p>
             
             {/* Social Links */}
@@ -42,27 +45,27 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">
-              Quick Links
+              {t('footer.quickLinks')}
             </h3>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  Product Features
+                  {t('footer.productFeatures')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  Tutorials
+                  {t('footer.tutorials')}
                 </a>
               </li>
               <li>
                 <a href="/about" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  关于我们
+                  {t('footer.aboutUs')}
                 </a>
               </li>
               <li>
                 <a href="/refund-policy" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  退款政策
+                  {t('footer.refundPolicy')}
                 </a>
               </li>
             </ul>
@@ -71,7 +74,7 @@ export default function Footer() {
           {/* Legal Links */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">
-              Legal
+              {t('footer.legal')}
             </h3>
             <ul className="space-y-3">
               <li>
@@ -79,7 +82,7 @@ export default function Footer() {
                   href="/privacy-policy" 
                   className="text-gray-600 hover:text-purple-600 transition-colors"
                 >
-                  Privacy Policy
+                  {t('footer.privacyPolicy')}
                 </a>
               </li>
               <li>
@@ -87,7 +90,7 @@ export default function Footer() {
                   href="/terms-of-service" 
                   className="text-gray-600 hover:text-purple-600 transition-colors"
                 >
-                  Terms of Service
+                  {t('footer.termsOfService')}
                 </a>
               </li>
               <li>
@@ -100,12 +103,12 @@ export default function Footer() {
                     window.dispatchEvent(event)
                   }}
                 >
-                  Cookie Settings
+                  {t('footer.cookieSettings')}
                 </Button>
               </li>
               <li>
                 <a href="#" className="text-gray-600 hover:text-purple-600 transition-colors">
-                  Contact Us
+                  {t('footer.contactUs')}
                 </a>
               </li>
             </ul>
@@ -115,10 +118,10 @@ export default function Footer() {
         <div className="border-t border-gray-300 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © 2025 Gemini Flash Image. All rights reserved.
+              {t('footer.copyright')}
             </p>
             <p className="text-gray-500 text-sm mt-4 md:mt-0">
-              Compliant with GDPR and EU Accessibility Standards
+              {t('footer.compliance')}
             </p>
           </div>
         </div>

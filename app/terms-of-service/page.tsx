@@ -1,7 +1,12 @@
+'use client'
+
 import { FileText, CheckCircle, Shield, User, Lock, Copyright, AlertTriangle, Scale, Mail, Clock } from 'lucide-react'
 import GlobalBackground from '@/components/GlobalBackground'
+import { useLanguage } from '@/hooks/useLanguage'
 
 export default function TermsOfService() {
+  const { t } = useLanguage()
+
   return (
     <>
       <GlobalBackground />
@@ -14,14 +19,14 @@ export default function TermsOfService() {
                 <FileText className="w-10 h-10 text-blue-300" />
               </div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-2xl">
-                服务条款
+                {t('termsOfService.title')}
         </h1>
               <p className="text-xl text-white/80 max-w-2xl mx-auto drop-shadow-lg">
-                使用我们的服务即表示您同意遵守以下条款和条件
+                {t('termsOfService.subtitle')}
               </p>
               <div className="mt-6 p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 inline-block">
                 <p className="text-white/90 text-lg">
-                  最后更新：2025年1月
+                  {t('termsOfService.lastUpdated')}
                 </p>
               </div>
             </div>
@@ -35,9 +40,9 @@ export default function TermsOfService() {
                     <CheckCircle className="w-6 h-6 text-green-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">1. 接受条款</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.acceptTerms.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      通过访问和使用Gemini Flash Image服务，您同意受这些服务条款的约束。如果您不同意这些条款，请不要使用我们的服务。
+                      {t('termsOfService.acceptTerms.content')}
                     </p>
                   </div>
                 </div>
@@ -50,9 +55,9 @@ export default function TermsOfService() {
                     <Shield className="w-6 h-6 text-purple-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">2. 服务描述</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.serviceDescription.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      Gemini Flash Image是一个基于人工智能的图像编辑服务，允许用户通过自然语言指令编辑图像。我们提供在线图像编辑工具和相关功能。
+                      {t('termsOfService.serviceDescription.content')}
                     </p>
                   </div>
                 </div>
@@ -65,20 +70,17 @@ export default function TermsOfService() {
                     <User className="w-6 h-6 text-blue-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">3. 用户账户</h2>
-                    <p className="text-white/90 mb-4">使用某些服务功能需要创建账户。您必须：</p>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.userAccount.title')}</h2>
+                    <p className="text-white/90 mb-4">{t('termsOfService.userAccount.subtitle')}</p>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {[
-                        '提供准确完整的信息',
-                        '保持账户信息更新',
-                        '保护账户密码安全',
-                        '对账户下的所有活动负责'
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center text-white/90">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
-                          {item}
-                        </div>
-                      ))}
+                      {Array.isArray(t('termsOfService.userAccount.requirements')) ? 
+                        (t('termsOfService.userAccount.requirements') as unknown as string[]).map((item, index) => (
+                          <div key={index} className="flex items-center text-white/90">
+                            <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                            {item}
+                          </div>
+                        )) : null
+                      }
                     </div>
                   </div>
                 </div>
@@ -91,20 +93,17 @@ export default function TermsOfService() {
                     <AlertTriangle className="w-6 h-6 text-red-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">4. 可接受使用</h2>
-                    <p className="text-white/90 mb-4">您同意不：</p>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.acceptableUse.title')}</h2>
+                    <p className="text-white/90 mb-4">{t('termsOfService.acceptableUse.subtitle')}</p>
                     <div className="grid md:grid-cols-2 gap-3">
-                      {[
-                        '上传非法、有害或侵犯他人权利的内容',
-                        '试图破坏或干扰服务的正常运行',
-                        '使用自动化工具过度访问服务',
-                        '反向工程或复制服务技术'
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center text-white/90">
-                          <div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>
-                          {item}
-                        </div>
-                      ))}
+                      {Array.isArray(t('termsOfService.acceptableUse.prohibitions')) ? 
+                        (t('termsOfService.acceptableUse.prohibitions') as unknown as string[]).map((item, index) => (
+                          <div key={index} className="flex items-center text-white/90">
+                            <div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>
+                            {item}
+                          </div>
+                        )) : null
+                      }
                     </div>
                   </div>
                 </div>
@@ -117,9 +116,9 @@ export default function TermsOfService() {
                     <Copyright className="w-6 h-6 text-yellow-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">5. 知识产权</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.intellectualProperty.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      服务和其内容受版权、商标和其他知识产权法律保护。您上传的内容仍然是您的，但您授予我们必要的许可来处理该内容以提供服务。
+                      {t('termsOfService.intellectualProperty.content')}
                     </p>
                   </div>
                 </div>
@@ -132,9 +131,9 @@ export default function TermsOfService() {
                     <Lock className="w-6 h-6 text-green-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">6. 隐私</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.privacy.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      您的隐私对我们很重要。请查看我们的隐私政策，了解我们如何收集、使用和保护您的信息。
+                      {t('termsOfService.privacy.content')}
                     </p>
                   </div>
                 </div>
@@ -147,9 +146,9 @@ export default function TermsOfService() {
                     <AlertTriangle className="w-6 h-6 text-orange-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">7. 免责声明</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.disclaimer.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      服务按"现状"提供，不提供任何明示或暗示的保证。我们不保证服务的连续性、准确性或无错误运行。
+                      {t('termsOfService.disclaimer.content')}
                     </p>
                   </div>
                 </div>
@@ -162,9 +161,9 @@ export default function TermsOfService() {
                     <Scale className="w-6 h-6 text-red-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">8. 责任限制</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.liabilityLimitation.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      在法律允许的最大范围内，我们对任何间接、偶然、特殊或后果性损害不承担责任。
+                      {t('termsOfService.liabilityLimitation.content')}
                     </p>
                   </div>
                 </div>
@@ -177,9 +176,9 @@ export default function TermsOfService() {
                     <Clock className="w-6 h-6 text-purple-300" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">9. 条款修改</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.termsModification.title')}</h2>
                     <p className="text-white/90 leading-relaxed text-lg">
-                      我们保留随时修改这些服务条款的权利。重大变更将通过适当方式通知您。继续使用服务表示您接受修改后的条款。
+                      {t('termsOfService.termsModification.content')}
                     </p>
                   </div>
                 </div>
@@ -192,13 +191,13 @@ export default function TermsOfService() {
                     <Mail className="w-6 h-6 text-blue-200" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">10. 联系信息</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{t('termsOfService.contactInfo.title')}</h2>
                     <p className="text-white/90 mb-4">
-                      如果您对这些服务条款有任何疑问，请联系我们：
+                      {t('termsOfService.contactInfo.subtitle')}
                     </p>
                     <div className="bg-white/20 backdrop-blur-md rounded-lg p-4 border border-white/30">
                       <p className="text-white font-semibold">
-                        📧 邮箱：legal@geminiflashimage.com
+                        {t('termsOfService.contactInfo.email')}
                       </p>
                     </div>
                   </div>

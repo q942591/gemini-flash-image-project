@@ -6,11 +6,13 @@ import Hyperspeed from '../../components/Hyperspeed';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function LoginPage() {
   const { signInWithGoogle } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,9 +20,9 @@ export default function LoginPage() {
   const urlError = searchParams.get('error');
   if (urlError && !error) {
     setError(
-      urlError === 'auth_failed' ? '认证失败，请重试' :
-      urlError === 'callback_failed' ? '登录回调处理失败' :
-      '登录过程中出现错误'
+      urlError === 'auth_failed' ? t('login.authFailed') :
+      urlError === 'callback_failed' ? t('login.callbackFailed') :
+      t('login.loginError')
     );
   }
 
@@ -31,7 +33,7 @@ export default function LoginPage() {
       await signInWithGoogle();
     } catch (err) {
       console.error('Google登录错误:', err);
-      setError('Google登录失败，请重试');
+      setError(t('login.googleLoginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -87,10 +89,10 @@ export default function LoginPage() {
         <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-3xl font-bold text-gray-900">
-              欢迎回来
+              {t('login.title')}
             </CardTitle>
             <CardDescription className="text-gray-600">
-              登录您的账户以继续使用 Gemini Flash Image
+              {t('login.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -128,19 +130,19 @@ export default function LoginPage() {
                 </svg>
               )}
               <span className="font-medium">
-                {isLoading ? '正在登录...' : '使用 Google 账户登录'}
+                {isLoading ? t('login.signingIn') : t('login.googleSignIn')}
               </span>
             </Button>
             
             <div className="text-center">
               <p className="text-sm text-gray-500">
-                登录即表示您同意我们的{' '}
+                {t('login.termsAgreement')}{' '}
                 <a href="/terms-of-service" className="text-blue-600 hover:underline">
-                  服务条款
+                  {t('login.termsOfService')}
                 </a>
-                {' '}和{' '}
+                {' '}{t('login.and')}{' '}
                 <a href="/privacy-policy" className="text-blue-600 hover:underline">
-                  隐私政策
+                  {t('login.privacyPolicy')}
                 </a>
               </p>
             </div>

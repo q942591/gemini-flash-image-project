@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { User, Mail, Calendar, LogOut, Coins, CreditCard, TrendingUp, ArrowRight } from 'lucide-react'
+import { User, Mail, Calendar, LogOut, Coins, CreditCard, TrendingUp, ArrowRight, Crown } from 'lucide-react'
 import LightRays from '@/components/LightRays'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/hooks/useLanguage'
 
 // 积分信息接口
 interface CreditInfo {
@@ -29,6 +30,7 @@ interface CreditTransaction {
 export default function ProfilePage() {
   const { user, session, signOut, loading: authLoading } = useAuth()
   const router = useRouter()
+  const { t } = useLanguage()
   const [creditInfo, setCreditInfo] = useState<CreditInfo>({
     current_credits: 0,
     total_earned: 0,
@@ -36,37 +38,6 @@ export default function ProfilePage() {
   })
   const [transactions, setTransactions] = useState<CreditTransaction[]>([])
   const [loading, setLoading] = useState(true)
-
-  // 如果认证还在加载中，显示加载状态
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">正在加载...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // 如果用户未认证，显示重定向状态
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">正在跳转到登录页面...</p>
-        </div>
-      </div>
-    )
-  }
-
-  useEffect(() => {
-    // 用户已认证，直接获取积分信息
-    if (user) {
-      fetchUserCredits()
-    }
-  }, [user])
 
   // 获取用户积分信息
   const fetchUserCredits = async () => {
@@ -104,7 +75,7 @@ export default function ProfilePage() {
       let totalConsumed = 0
 
       if (creditData) {
-        currentCredits = creditData.balance || 0  // 使用balance字段
+        currentCredits = creditData.balance || 0
       }
 
       if (transactionData) {
@@ -123,33 +94,46 @@ export default function ProfilePage() {
         total_consumed: totalConsumed
       })
 
-      setTransactions(transactionData || [])
-
-      // 检查是否是新用户（没有积分记录）
-      console.log('检查新用户状态:')
-      console.log('- 积分记录:', creditData)
-      console.log('- 交易记录数量:', transactionData?.length || 0)
-      
-      if (!creditData && transactionData?.length === 0) {
-        console.log('检测到新用户，自动赠送50积分...')
-        await giveWelcomeCredits()
-        
-        // 强制重新获取数据
-        setTimeout(async () => {
-          console.log('强制重新获取积分数据...')
-          await fetchUserCredits()
-        }, 1000)
-      } else if (creditData) {
-        console.log('用户已有积分记录，无需赠送')
-      } else {
-        console.log('用户有交易记录但无积分记录，可能是数据不一致')
+      if (transactionData) {
+        setTransactions(transactionData)
       }
 
     } catch (error) {
-      console.error('获取用户积分信息失败:', error)
+      console.error('获取用户信息失败:', error)
     } finally {
       setLoading(false)
     }
+  }
+
+  useEffect(() => {
+    // 用户已认证，直接获取积分信息
+    if (user) {
+      fetchUserCredits()
+    }
+  }, [user])
+
+  // 如果认证还在加载中，显示加载状态
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">{t('profile.loading')}</p>
+        </div>
+      </div>
+    )
+  }
+
+  // 如果用户未认证，显示重定向状态
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">{t('profile.redirecting')}</p>
+        </div>
+      </div>
+    )
   }
 
   // 给新用户赠送欢迎积分
@@ -220,10 +204,6 @@ export default function ProfilePage() {
     return num.toLocaleString('zh-CN')
   }
 
-  if (!user) {
-    return null
-  }
-
   const handleSignOut = async () => {
     try {
       await signOut()
@@ -258,6 +238,32 @@ export default function ProfilePage() {
     return null
   }
 
+  // 生成交易描述
+  const getTransactionDescription = (transaction: any) => {
+    const { type, amount, metadata } = transaction
+    
+    // 如果有metadata信息，尝试从中获取套餐详情
+    if (metadata && metadata.planName) {
+      return `${t('profile.transactionTypes.PURCHASE')}: ${metadata.planName}`
+    }
+    
+    // 根据交易类型和金额判断套餐
+    if (type === 'PURCHASE' || type === 'RECHARGE') {
+      if (amount >= 9000) {
+        return t('profile.transactionTypes.PURCHASE_ENTERPRISE')
+      } else if (amount >= 2000) {
+        return t('profile.transactionTypes.PURCHASE_PROFESSIONAL')
+      } else if (amount >= 550) {
+        return t('profile.transactionTypes.PURCHASE_STANDARD')
+      } else if (amount >= 160) {
+        return t('profile.transactionTypes.PURCHASE_BASIC')
+      }
+    }
+    
+    // 默认显示
+    return t(`profile.transactionTypes.${type}`) || type
+  }
+
   const displayName = getUserDisplayName()
   const avatarUrl = getUserAvatar()
 
@@ -287,10 +293,10 @@ export default function ProfilePage() {
         <div className="py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              个人空间
+              {t('profile.title')}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              管理您的账户信息、积分状态和个性化设置
+              {t('profile.subtitle')}
             </p>
           </div>
         </div>
@@ -334,13 +340,13 @@ export default function ProfilePage() {
                           className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 px-8 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                           <CreditCard className="w-5 h-5 mr-2" />
-                          购买积分
+                          {t('profile.buyCredits')}
                           <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
                       </div>
                       
                       <p className="text-lg text-gray-600 mb-6">
-                        欢迎来到您的个人空间
+                        {t('profile.welcome')}
                       </p>
                       
                       {/* 用户统计信息 */}
@@ -349,7 +355,7 @@ export default function ProfilePage() {
                           <div className="flex items-center space-x-3">
                             <Mail className="w-5 h-5 text-purple-500" />
                             <div className="text-left">
-                              <p className="text-sm text-gray-500">邮箱地址</p>
+                              <p className="text-sm text-gray-500">{t('profile.email')}</p>
                               <p className="font-medium text-gray-900 text-sm">{user.email}</p>
                             </div>
                           </div>
@@ -359,9 +365,9 @@ export default function ProfilePage() {
                           <div className="flex items-center space-x-3">
                             <Calendar className="w-5 h-5 text-blue-500" />
                             <div className="text-left">
-                              <p className="text-sm text-gray-500">注册时间</p>
+                              <p className="text-sm text-gray-500">{t('profile.registrationTime')}</p>
                               <p className="font-medium text-gray-900 text-sm">
-                                {user.created_at ? new Date(user.created_at).toLocaleDateString('zh-CN') : '未知'}
+                                {user.created_at ? new Date(user.created_at).toLocaleDateString('zh-CN') : t('profile.unknown')}
                               </p>
                             </div>
                           </div>
@@ -369,10 +375,16 @@ export default function ProfilePage() {
 
                         <div className="bg-white rounded-lg p-4 shadow-sm">
                           <div className="flex items-center space-x-3">
-                            <User className="w-5 h-5 text-green-500" />
+                            <Crown className="w-5 h-5 text-yellow-500" />
                             <div className="text-left">
-                              <p className="text-sm text-gray-500">用户ID</p>
-                              <p className="font-medium text-gray-900 text-xs font-mono">{user.id}</p>
+                              <p className="text-sm text-gray-500">{t('profile.membershipLevel')}</p>
+                              <p className="font-medium text-gray-900 text-sm">
+                                {creditInfo.current_credits >= 9000 ? t('profile.enterpriseMember') :
+                                 creditInfo.current_credits >= 2000 ? t('profile.professionalMember') :
+                                 creditInfo.current_credits >= 550 ? t('profile.standardMember') :
+                                 creditInfo.current_credits >= 160 ? t('profile.basicMember') :
+                                 t('profile.freeMember')}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -389,10 +401,10 @@ export default function ProfilePage() {
                     <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-3">
                       <Coins className="w-6 h-6 text-white" />
                     </div>
-                    累计消费
+                    {t('profile.totalConsumption')}
                   </CardTitle>
                   <CardDescription className="text-lg text-gray-600">
-                    查看您的积分消费记录和使用情况
+                    {t('profile.consumptionDescription')}
                   </CardDescription>
                 </CardHeader>
                 
@@ -403,9 +415,9 @@ export default function ProfilePage() {
                     <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-6 text-white shadow-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm opacity-90 mb-1">当前积分</p>
+                          <p className="text-sm opacity-90 mb-1">{t('profile.currentCredits')}</p>
                           <p className="text-4xl font-bold">{formatNumber(creditInfo.current_credits)}</p>
-                          <p className="text-xs opacity-80 mt-1">可用余额</p>
+                          <p className="text-xs opacity-80 mt-1">{t('profile.availableBalance')}</p>
                         </div>
                         <Coins className="w-16 h-16 opacity-80" />
                       </div>
@@ -415,9 +427,9 @@ export default function ProfilePage() {
                     <div className="bg-gradient-to-r from-green-500 to-teal-600 rounded-xl p-6 text-white shadow-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm opacity-90 mb-1">累计获得</p>
+                          <p className="text-sm opacity-90 mb-1">{t('profile.totalEarned')}</p>
                           <p className="text-4xl font-bold">{formatNumber(creditInfo.total_earned)}</p>
-                          <p className="text-xs opacity-80 mt-1">总获得积分</p>
+                          <p className="text-xs opacity-80 mt-1">{t('profile.totalEarnedCredits')}</p>
                         </div>
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
                           <span className="text-2xl">📈</span>
@@ -429,9 +441,9 @@ export default function ProfilePage() {
                     <div className="bg-gradient-to-r from-red-500 to-pink-600 rounded-xl p-6 text-white shadow-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm opacity-90 mb-1">累计消耗</p>
+                          <p className="text-sm opacity-90 mb-1">{t('profile.totalConsumed')}</p>
                           <p className="text-4xl font-bold">{formatNumber(creditInfo.total_consumed)}</p>
-                          <p className="text-xs opacity-80 mt-1">总消耗积分</p>
+                          <p className="text-xs opacity-80 mt-1">{t('profile.totalConsumedCredits')}</p>
                         </div>
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
                           <span className="text-2xl">📉</span>
@@ -445,7 +457,7 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between">
                       <h3 className="text-xl font-semibold text-gray-900 flex items-center">
                         <TrendingUp className="w-6 h-6 mr-2 text-blue-500" />
-                        积分历史记录
+                        {t('profile.creditHistory')}
                       </h3>
                       <Button
                         onClick={fetchUserCredits}
@@ -454,14 +466,14 @@ export default function ProfilePage() {
                         size="sm"
                         className="text-blue-600 border-blue-200 hover:bg-blue-50"
                       >
-                        {loading ? '刷新中...' : '刷新'}
+                        {loading ? t('profile.refreshing') : t('profile.refresh')}
                       </Button>
                     </div>
                     <div className="max-h-96 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
                       {loading ? (
-                        <p className="text-center py-8">加载中...</p>
+                        <p className="text-center py-8">{t('profile.loading')}</p>
                       ) : transactions.length === 0 ? (
-                        <p className="text-center py-8">暂无积分交易记录。</p>
+                        <p className="text-center py-8">{t('profile.noTransactions')}</p>
                       ) : (
                         transactions.map(transaction => (
                           <div key={transaction.id} className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-100">
@@ -471,9 +483,9 @@ export default function ProfilePage() {
                                   <span className="text-white text-sm">🖼️</span>
                                 </div>
                                 <div>
-                                  <span className="text-gray-700 font-medium">{transaction.description}</span>
+                                  <span className="text-gray-700 font-medium">{getTransactionDescription(transaction)}</span>
                                   <p className="text-xs text-gray-500">
-                                    {transaction.created_at ? new Date(transaction.created_at).toLocaleDateString('zh-CN') : '未知时间'}
+                                    {transaction.created_at ? new Date(transaction.created_at).toLocaleDateString('zh-CN') : t('profile.unknownTime')}
                                   </p>
                                 </div>
                               </div>

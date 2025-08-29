@@ -226,8 +226,7 @@ export default function FeatureShowcase() {
                         alt="Before"
                         className="w-full h-64 object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-4 left-4 text-white">
+                      <div className="absolute bottom-4 left-4 text-white bg-black/60 px-2 py-1 rounded">
                         <p className="text-sm opacity-80">手写笔记、低质量截图</p>
                       </div>
                     </div>
@@ -241,8 +240,7 @@ export default function FeatureShowcase() {
                         alt="After"
                         className="w-full h-64 object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-4 left-4 text-white">
+                      <div className="absolute bottom-4 left-4 text-white bg-black/60 px-2 py-1 rounded">
                         <p className="text-sm opacity-80">结构清晰可视化图稿</p>
                       </div>
                     </div>

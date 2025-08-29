@@ -104,7 +104,7 @@ export default function Header() {
                   <Link href="/profile">
                     <DropdownMenuItem className="cursor-pointer">
                       <User className="w-4 h-4 mr-2" />
-                      个人空间
+                      {t('header.profile')}
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
@@ -113,7 +113,7 @@ export default function Header() {
                     className="cursor-pointer text-red-600 focus:text-red-600"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
-                    退出登录
+                    {t('header.signOut')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -206,7 +206,7 @@ export default function Header() {
                               </span>
                             )}
                           </div>
-                          <span>{user.email?.split('@')[0] || '用户'}</span>
+                          <span>{user.email?.split('@')[0] || t('header.user')}</span>
                         </div>
                       </Button>
                     </DropdownMenuTrigger>

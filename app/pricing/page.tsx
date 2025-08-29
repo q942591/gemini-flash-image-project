@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import PaymentModal from '@/components/PaymentModal'
 import { CreditPlan } from '@/types/payment'
+import { useLanguage } from '@/hooks/useLanguage'
 
 export default function Pricing() {
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
+  const { t } = useLanguage()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<CreditPlan | null>(null)
@@ -81,8 +83,8 @@ export default function Pricing() {
   const handlePurchase = async (planId: string) => {
     if (!user) {
       toast({
-        title: "请先登录",
-        description: "购买积分前需要先登录您的账户",
+        title: t('pricing.loginRequired'),
+        description: t('pricing.loginRequiredDescription'),
         variant: "destructive",
       })
       router.push('/login')
@@ -129,8 +131,8 @@ export default function Pricing() {
     } catch (error) {
       console.error('购买错误:', error)
       toast({
-        title: "购买失败",
-        description: "创建支付时出现错误，请稍后重试",
+        title: t('pricing.purchaseFailed'),
+        description: t('pricing.purchaseFailedDescription'),
         variant: "destructive",
       })
     } finally {
@@ -140,8 +142,8 @@ export default function Pricing() {
 
   const handlePaymentSuccess = (credits: number) => {
     toast({
-      title: "购买成功！",
-      description: `已成功获得 ${credits} 积分`,
+      title: t('pricing.purchaseSuccess'),
+      description: t('pricing.purchaseSuccessDescription').replace('{credits}', credits.toString()),
     })
     
     // 支付成功后，积分信息会在个人空间页面自动刷新
@@ -162,15 +164,15 @@ export default function Pricing() {
         <section className="py-20 relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-2xl">
-                定价方案
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-2xl bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                {t('pricing.title')}
               </h1>
-              <p className="text-xl text-white/80 max-w-3xl mx-auto drop-shadow-lg">
-                选择最适合您需求的AI图像编辑方案
+              <p className="text-xl text-gray-800 max-w-3xl mx-auto drop-shadow-lg font-medium">
+                {t('pricing.subtitle')}
               </p>
-              <div className="mt-6 p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 inline-block">
-                <p className="text-white/90 text-lg">
-                  <span className="text-yellow-300 font-semibold">每次处理消耗15积分</span>
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md rounded-lg border border-purple-300/30 inline-block">
+                <p className="text-gray-800 text-lg font-semibold">
+                  <span className="text-blue-600 font-bold">{t('pricing.creditCost')}</span>
                 </p>
               </div>
             </div>
@@ -188,36 +190,36 @@ export default function Pricing() {
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <span className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                        推荐
+                        {t('pricing.popular')}
                       </span>
                     </div>
                   )}
                   
                   <h3 className={`text-xl font-bold mb-4 ${
-                    plan.id === 'basic' ? 'text-blue-300' :
-                    plan.id === 'standard' ? 'text-purple-300' :
-                    plan.id === 'professional' ? 'text-purple-300' :
-                    'text-red-300'
+                    plan.id === 'basic' ? 'text-blue-600' :
+                    plan.id === 'standard' ? 'text-purple-600' :
+                    plan.id === 'professional' ? 'text-purple-600' :
+                    'text-green-600'
                   }`}>
                     {plan.name}
                   </h3>
                   
-                  <div className="text-3xl font-bold text-green-300 mb-2">
+                  <div className="text-3xl font-bold text-gray-800 mb-2">
                     ${plan.price}
                   </div>
                   
-                  <div className="text-lg text-yellow-300 mb-4 font-semibold">
-                    {plan.credits}积分
+                  <div className="text-lg text-blue-600 mb-4 font-semibold">
+                    {plan.credits}{t('pricing.credits')}
                   </div>
                   
-                  <div className="text-sm text-white/60 mb-6">
-                    约{plan.estimatedEdits}次AI编辑
+                  <div className="text-sm text-gray-600 mb-6 font-medium">
+                    {t('pricing.estimatedEdits').replace('{count}', plan.estimatedEdits.toString())}
                   </div>
                   
                   <ul className="space-y-2 mb-6">
                     {plan.description.split('，').map((feature, index) => (
-                      <li key={index} className="flex items-center text-white/80 text-sm">
-                        <span className="text-green-400 mr-2">✓</span>
+                      <li key={index} className="flex items-center text-gray-700 text-sm">
+                        <span className="text-green-500 mr-2 font-bold">✓</span>
                         {feature}
                       </li>
                     ))}
@@ -235,7 +237,7 @@ export default function Pricing() {
                         : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
                     }`}
                   >
-                    {loadingPlan === plan.id ? '处理中...' : '立即购买'}
+                    {loadingPlan === plan.id ? t('pricing.processing') : t('pricing.buyNow')}
                   </Button>
                 </div>
               ))}
