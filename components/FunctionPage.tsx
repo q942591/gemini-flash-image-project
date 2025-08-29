@@ -65,7 +65,7 @@ function BeforeAfterComparison() {
         }}
       >
         <img
-          src="/ppt美化.jpg"
+          src="/ppt美化.png"
           alt="After: 结构清晰可视化图稿"
           className="absolute inset-0 w-full h-full object-cover"
         />

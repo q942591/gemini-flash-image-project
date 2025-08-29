@@ -326,8 +326,8 @@ export default function FunctionPage() {
       
       {/* 页面内容 */}
       <div className="relative z-10 flex min-h-screen">
-        {/* 左侧导航栏 - 模块化设计，向右移动，拉宽，高度与右侧模块一致 */}
-        <aside className="w-86 bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl m-6 ml-8 h-[800px] flex flex-col">
+        {/* 电脑端保持原有布局 - 完全不动 */}
+        <aside className="hidden lg:block w-86 bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl m-6 ml-8 h-[800px] flex flex-col">
           {/* 顶部标题和模式 */}
           <div className="mb-4">
             <div className="mb-2">
@@ -498,8 +498,8 @@ export default function FunctionPage() {
           </div>
         </aside>
 
-        {/* 主内容区域 - 显示分析结果或默认内容 */}
-        <main className="flex-1 flex items-center justify-center p-8">
+        {/* 电脑端主内容区域 - 完全不动 */}
+        <main className="hidden lg:flex flex-1 items-center justify-center p-8">
           <div className="w-full max-w-7xl">
             {/* 中央内容区域 - 根据状态显示不同内容 */}
             <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-20 px-0 shadow-2xl -mt-16">
@@ -627,6 +627,299 @@ export default function FunctionPage() {
             </div>
           </div>
         </main>
+
+        {/* 移动端完全垂直布局 - 从上到下排布 */}
+        <div className="lg:hidden w-full min-h-screen flex flex-col">
+          {/* 移动端页面标题 */}
+          <div className="text-center py-6 px-4">
+            <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">{t('functionPage.aiImageProcessing')}</h1>
+          </div>
+
+          {/* 移动端功能选择器 */}
+          <div className="px-4 mb-6">
+            <div className="bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl">
+              <h3 className="text-gray-900 font-semibold mb-3 drop-shadow-lg text-lg">{t('functionPage.selectFunction')}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => {
+                    setSelectedFunction('edit')
+                    setCreativeDescription('')
+                    setShowDefaultPrompt(true)
+                  }}
+                  className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    selectedFunction === 'edit'
+                      ? 'bg-purple-600 text-white shadow-lg'
+                      : 'bg-white/70 text-gray-800 hover:bg-white/90 border border-gray-200'
+                  }`}
+                >
+                  ✏️ {t('functionPage.imageEdit')}
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedFunction('analyze')
+                    setCreativeDescription('')
+                    setShowDefaultPrompt(true)
+                  }}
+                  className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    selectedFunction === 'analyze'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-white/70 text-gray-800 hover:bg-white/90 border border-gray-200'
+                  }`}
+                >
+                  🔍 {t('functionPage.imageAnalysis')}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 移动端上传图片区域 */}
+          <div className="px-4 mb-6">
+            <div className="bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl">
+              <h3 className="text-gray-900 font-semibold mb-3 drop-shadow-lg text-lg">{t('functionPage.uploadImage')}</h3>
+              <div className="border-2 border-dashed border-gray-400 rounded-lg p-6 text-center hover:border-blue-500 transition-colors bg-white/70 min-h-[160px] flex items-center justify-center relative">
+                {uploadedImage ? (
+                  <div className="absolute inset-0 rounded-lg overflow-hidden">
+                    <img
+                      src={URL.createObjectURL(uploadedImage)}
+                      alt={t('functionPage.uploadedImage')}
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      onClick={() => setUploadedImage(null)}
+                      size="sm"
+                      variant="outline"
+                      className="absolute top-2 right-2 w-8 h-8 p-0 bg-white/90 hover:bg-white border-red-400 text-red-600 hover:text-red-700 rounded-full shadow-lg"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="file"
+                      id="image-upload-mobile"
+                      accept=".jpg,.jpeg,.png,.webp"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <label htmlFor="image-upload-mobile" className="cursor-pointer">
+                      <Upload className="w-8 h-8 text-gray-600 mx-auto mb-3" />
+                      <p className="text-gray-800 text-sm font-semibold mb-2">{t('functionPage.clickToUpload')}</p>
+                      <p className="text-gray-600 text-xs font-medium">{t('functionPage.supportedFormats')}</p>
+                    </label>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 移动端参数设置 */}
+          <div className="px-4 mb-6">
+            <div className="bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl">
+              <h3 className="text-gray-900 font-semibold mb-3 drop-shadow-lg text-lg">{t('functionPage.parameterSettings')}</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-gray-800 text-sm mb-2 font-semibold">
+                    {selectedFunction === 'edit' ? t('functionPage.editPrompt') : t('functionPage.analysisPrompt')}
+                  </label>
+                  <div className="space-y-3">
+                    <textarea
+                      value={showDefaultPrompt ? '' : creativeDescription}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        if (value === '') {
+                          setShowDefaultPrompt(true)
+                          setCreativeDescription('')
+                        } else {
+                          setShowDefaultPrompt(false)
+                          setCreativeDescription(value)
+                        }
+                      }}
+                      onFocus={() => {
+                        if (showDefaultPrompt) {
+                          setShowDefaultPrompt(false)
+                          setCreativeDescription('')
+                        }
+                      }}
+                      className="w-full h-32 p-3 bg-white/80 border-2 border-gray-300 rounded-lg text-gray-800 placeholder:text-gray-500 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm font-medium text-base"
+                      placeholder={selectedFunction === 'edit' ? 
+                        t('functionPage.editPlaceholder') : 
+                        t('functionPage.analysisPlaceholder')
+                      }
+                    />
+                    <Button
+                      onClick={getRandomDescription}
+                      size="sm"
+                      variant="outline"
+                      className="w-full border-gray-400 text-gray-700 hover:bg-gray-50 font-medium"
+                    >
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      {t('functionPage.random')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 移动端开始按钮 */}
+          <div className="px-4 mb-6">
+            <div className="bg-white/40 backdrop-blur-xl border-2 border-gray-300 rounded-2xl p-4 shadow-2xl">
+              <div className="bg-orange-500/40 border-2 border-orange-500/60 rounded-lg p-3 mb-4 backdrop-blur-sm">
+                <div className="flex items-center space-x-2">
+                  <Star className="w-4 h-4 text-orange-700" />
+                  <span className="text-orange-900 text-sm font-bold">{t('functionPage.consume15Credits')}</span>
+                </div>
+              </div>
+              
+              <Button
+                onClick={handleGenerate}
+                disabled={!uploadedImage || isAnalyzing}
+                className={`w-full ${
+                  uploadedImage && !isAnalyzing
+                    ? 'bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-semibold shadow-lg' 
+                    : 'bg-gray-400 cursor-not-allowed text-white'
+                }`}
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {selectedFunction === 'edit' ? t('functionPage.editing') : t('functionPage.analyzing')}
+                  </>
+                ) : uploadedImage ? (
+                  <>
+                    <div className="w-2 h-2 bg-cyan-300 rounded-full mr-2"></div>
+                    {selectedFunction === 'edit' ? t('functionPage.startProcessing') : t('functionPage.startProcessing')}
+                    <span className="ml-2 bg-emerald-700 px-2 py-1 rounded text-xs">- 15</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {t('functionPage.pleaseUploadImage')}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* 移动端结果显示区域 - 占据剩余空间 */}
+          <div className="flex-1 px-4 pb-6">
+            {isAnalyzing ? (
+              // 移动端分析中状态
+              <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-12 px-6 shadow-2xl text-center h-full flex items-center justify-center">
+                <div>
+                  <Loader2 className="w-16 h-16 text-purple-600 mx-auto mb-6 animate-spin drop-shadow-lg" />
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4 drop-shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    {selectedFunction === 'edit' ? t('functionPage.editingImage') : t('functionPage.analyzingImage')}
+                  </h2>
+                  <p className="text-lg text-gray-700 drop-shadow-lg font-semibold">
+                    {selectedFunction === 'edit' ? t('functionPage.pleaseWaitEditing') : t('functionPage.pleaseWaitAnalyzing')}
+                  </p>
+                </div>
+              </div>
+            ) : editedImageUrl ? (
+              // 移动端显示编辑结果
+              <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-8 px-6 shadow-2xl text-center h-full flex flex-col justify-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6 drop-shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{t('functionPage.editResults')}</h2>
+                <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-0 border-2 border-white/60 shadow-xl mb-4">
+                  <img
+                    src={editedImageUrl}
+                    alt={t('functionPage.editedImageAlt')}
+                    className="w-full h-auto max-h-[50vh] object-contain rounded-2xl"
+                  />
+                  <Button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = editedImageUrl;
+                      link.download = `edited-image-${Date.now()}.png`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="absolute bottom-3 right-3 bg-green-600 hover:bg-green-700 text-white shadow-lg font-semibold"
+                    size="sm"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    {t('functionPage.downloadImage')}
+                  </Button>
+                </div>
+              </div>
+            ) : analysisResult ? (
+              // 移动端显示分析结果
+              <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-8 px-6 shadow-2xl text-center h-full flex flex-col justify-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6 drop-shadow-lg bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{t('functionPage.analysisResults')}</h2>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/60 shadow-xl mb-4 flex-1 overflow-y-auto">
+                  <p className="text-base text-gray-800 leading-relaxed text-left whitespace-pre-wrap font-medium">
+                    {analysisResult}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    onClick={() => {
+                      setAnalysisResult('')
+                      setError('')
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  >
+                    {t('common.retry')}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedFunction('edit')
+                      setAnalysisResult('')
+                      setError('')
+                    }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                  >
+                    {t('functionPage.switchToEdit')}
+                  </Button>
+                </div>
+              </div>
+            ) : error ? (
+              // 移动端显示错误信息
+              <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-8 px-6 shadow-2xl text-center h-full flex flex-col justify-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <X className="w-8 h-8 text-red-600" />
+                </div>
+                <h2 className="text-3xl font-bold text-red-900 mb-4 drop-shadow-lg">
+                  {selectedFunction === 'edit' ? t('functionPage.editFailed') : t('functionPage.analysisFailed')}
+                </h2>
+                <p className="text-lg text-red-700 drop-shadow-lg mb-6 font-semibold">{error}</p>
+                <Button
+                  onClick={() => setError('')}
+                  className="bg-red-600 hover:bg-red-700 text-white font-semibold"
+                >
+                  {t('common.retry')}
+                </Button>
+              </div>
+            ) : (
+              // 移动端默认状态
+              <div className="bg-white/40 backdrop-blur-xl border border-white/50 rounded-3xl py-8 px-6 shadow-2xl text-center h-full flex flex-col justify-center">
+                <div className="w-48 h-48 border-2 border-dashed border-gray-600 rounded-full flex items-center justify-center relative mx-auto mb-8">
+                  <div className="text-center">
+                    <Gift className="w-12 h-12 text-purple-600 mx-auto mb-3 drop-shadow-lg" />
+                    <div className="w-8 h-3 bg-orange-500 rounded-full mx-auto shadow-lg"></div>
+                  </div>
+                  
+                  <div className="absolute inset-0 animate-spin">
+                    <div className="absolute top-3 left-1/2 w-3 h-3 bg-yellow-500 rounded-full shadow-lg shadow-yellow-500/70"></div>
+                  </div>
+                  <div className="absolute inset-0 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}>
+                    <div className="absolute bottom-3 left-1/2 w-3 h-3 bg-pink-500 rounded-full shadow-lg shadow-pink-500/70"></div>
+                  </div>
+                </div>
+                
+                <h1 className="text-4xl font-bold text-gray-900 mb-6 drop-shadow-lg bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent">
+                  {selectedFunction === 'edit' ? t('functionPage.yourCreativity') : t('functionPage.yourInspiration')}
+                </h1>
+                
+                <p className="text-2xl text-gray-800 font-bold drop-shadow-lg">
+                  {selectedFunction === 'edit' ? t('functionPage.startCreating') : t('functionPage.startUnderstanding')}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )
